@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="theme-color" content="#0f172a"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="أوفر تايم"/>
+<title>أوفر تايم</title>
+<link rel="manifest" href="manifest.json"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{min-height:100vh;background:#0f172a;color:#e2e8f0;font-family:Tahoma,Arial,sans-serif;direction:rtl;padding-bottom:40px}
+button{cursor:pointer;font-family:inherit}
+button:active{opacity:.8;transform:scale(.97)}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1)}
+
+#hdr{background:#1e293b;border-bottom:1px solid #334155;padding:16px;position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center}
+.h-title{font-size:18px;font-weight:700;color:#f1f5f9}
+.h-sub{font-size:10px;color:#64748b;margin-bottom:2px}
+#badge{background:#1e3a5f;border:1px solid #2563eb;border-radius:10px;padding:6px 12px;text-align:center}
+.b1{font-size:10px;color:#93c5fd}
+.b2{font-size:13px;font-weight:700;color:#60a5fa}
+.b3{font-size:10px;color:#64748b}
+
+#tabs{display:flex;gap:8px;margin:14px 14px 0}
+.tb{flex:1;padding:10px;border-radius:10px;border:none;font-weight:700;font-size:13px;background:#1e293b;color:#64748b}
+.tb.on{background:#2563eb;color:#fff}
+
+#pg{padding:16px}
+
+.card{background:#1e293b;border-radius:12px;padding:14px;margin-bottom:14px;border:1px solid #334155}
+.lbl{font-size:12px;color:#94a3b8;margin-bottom:8px;display:block}
+input[type=date]{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:10px;color:#e2e8f0;font-size:15px;font-family:inherit}
+.hint{font-size:11px;color:#64748b;margin-top:6px}
+.hint span{color:#60a5fa}
+
+.nbts{display:flex;gap:10px;margin-bottom:20px}
+.nbt{flex:1;padding:24px 10px;border-radius:14px;color:#fff;display:flex;flex-direction:column;align-items:center;border:none}
+.nbt.t6{background:linear-gradient(135deg,#0c4a6e,#0e7490);border:2px solid #0891b2}
+.nbt.t8{background:linear-gradient(135deg,#3b0764,#6d28d9);border:2px solid #7c3aed}
+.nbt .ic{font-size:32px;margin-bottom:6px}
+.nbt .nm{font-size:16px;font-weight:700}
+.nbt .sb{font-size:12px;margin-top:3px}
+.nbt.t6 .sb{color:#7dd3fc}
+.nbt.t8 .sb{color:#c4b5fd}
+
+.sec{font-size:12px;color:#94a3b8;margin-bottom:10px}
+.sc{background:#1e293b;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid #334155;display:flex;justify-content:space-between;align-items:center}
+.sc-l .n{font-weight:700;font-size:15px;color:#f1f5f9}
+.sc-l .s{font-size:11px;color:#64748b;margin-top:3px}
+.sc-r{background:#0f172a;border:1px solid #22c55e;border-radius:10px;padding:8px 14px;text-align:center}
+.sc-r .num{font-size:22px;font-weight:700;color:#22c55e}
+.sc-r .un{font-size:10px;color:#64748b}
+
+.empty{text-align:center;padding:50px 20px;color:#475569}
+.empty .em{font-size:44px;margin-bottom:10px}
+
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;border-bottom:1px solid #334155;padding-bottom:8px}
+.ph .pn{font-weight:700;color:#60a5fa;font-size:15px}
+.ph .pt{background:#052e16;border:1px solid #22c55e;border-radius:6px;padding:3px 10px;color:#22c55e;font-weight:700;font-size:14px}
+.pg{margin-bottom:22px}
+
+.rc{background:#1e293b;border-radius:10px;padding:12px;margin-bottom:8px}
+.rc.t6{border:1px solid #0891b2}
+.rc.t8{border:1px solid #7c3aed}
+.rt{display:flex;justify-content:space-between;align-items:flex-start}
+.rbdg{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;margin-bottom:4px}
+.rbdg.t6{background:#0c4a6e;color:#7dd3fc}
+.rbdg.t8{background:#3b0764;color:#c4b5fd}
+.rdt{font-size:12px;color:#94a3b8}
+.rnote{font-size:11px;color:#64748b;margin-top:3px;font-style:italic}
+.rac{display:flex;gap:5px;align-items:center}
+.hbdg{background:#0f172a;border-radius:6px;padding:5px 8px;color:#22c55e;font-weight:700;font-size:14px}
+.ibt{background:none;border:none;font-size:14px;padding:3px;opacity:.6}
+.ne{margin-top:10px;display:flex;gap:6px}
+.ne input{flex:1;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:7px 9px;color:#e2e8f0;font-size:12px;font-family:inherit}
+.ns{padding:7px 12px;border-radius:6px;border:none;background:#22c55e;color:#fff;font-weight:700}
+.nc{padding:7px 12px;border-radius:6px;border:none;background:#334155;color:#94a3b8}
+
+#toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);border-radius:10px;padding:10px 20px;font-weight:700;font-size:14px;z-index:999;box-shadow:0 6px 20px rgba(0,0,0,.4);display:none;white-space:nowrap;color:#fff}
+
+#moverlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:100}
+#moverlay.open{display:flex}
+#mbox{background:#1e293b;border-radius:14px;padding:22px;margin:20px;border:1px solid #ef4444;text-align:center;max-width:280px;width:100%}
+.mi{font-size:32px;margin-bottom:10px}
+.mt{font-size:15px;font-weight:700;margin-bottom:6px}
+.ms{font-size:13px;color:#94a3b8;margin-bottom:18px}
+.mbs{display:flex;gap:8px}
+.mc{flex:1;padding:9px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:#94a3b8;font-size:13px;font-family:inherit}
+.md{flex:1;padding:9px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-size:13px;font-weight:700;font-family:inherit}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div>
+    <div class="h-sub">T&amp;C GARMENTS</div>
+    <div class="h-title">⏱️ أوفر تايم</div>
+  </div>
+  <div id="badge">
+    <div class="b1">الفترة الحالية</div>
+    <div class="b2" id="bp">—</div>
+    <div class="b3" id="bs">0 سهرة • 0 ساعة</div>
+  </div>
+</div>
+
+<div id="tabs">
+  <button class="tb on" onclick="go('home')">➕ تسجيل</button>
+  <button class="tb" onclick="go('hist')">📋 السجل</button>
+</div>
+
+<div id="pg"></div>
+<div id="toast"></div>
+
+<div id="moverlay">
+  <div id="mbox">
+    <div class="mi">⚠️</div>
+    <div class="mt">تأكيد الحذف</div>
+    <div class="ms">هتحذف التسجيل ده؟</div>
+    <div class="mbs">
+      <button class="mc" onclick="cm()">إلغاء</button>
+      <button class="md" onclick="cd()">احذف</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var KEY="ot_v1",recs=[],tab="home",delId=null,noteId=null,selDate="";
+var MN=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+
+function load(){try{recs=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){recs=[]}}
+function save(){localStorage.setItem(KEY,JSON.stringify(recs))}
+
+function today(){var d=new Date();return d.toISOString().split("T")[0]}
+
+function period(ds){
+  var d=new Date(ds),day=d.getDate(),m=d.getMonth(),y=d.getFullYear();
+  if(day<=20) return {lbl:MN[m]+" "+y,key:y*100+m};
+  var nm=(m+1)%12,ny=nm===0?y+1:y;
+  return {lbl:MN[nm]+" "+ny,key:ny*100+nm};
+}
+
+function fmtDate(ds){
+  var d=new Date(ds+"T12:00:00");
+  return d.toLocaleDateString("ar-EG",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+}
+
+function groups(){
+  var map={};
+  recs.forEach(function(r){
+    var p=period(r.date);
+    if(!map[p.key]) map[p.key]={lbl:p.lbl,key:p.key,recs:[],hrs:0};
+    map[p.key].recs.push(r);
+    map[p.key].hrs+=r.hrs;
+  });
+  Object.values(map).forEach(function(g){g.recs.sort(function(a,b){return b.date.localeCompare(a.date)})});
+  return Object.values(map).sort(function(a,b){return b.key-a.key});
+}
+
+function updHdr(){
+  var p=period(selDate);
+  document.getElementById("bp").textContent=p.lbl;
+  var gs=groups(),g=gs.find(function(x){return x.key===p.key});
+  document.getElementById("bs").textContent=(g?g.recs.length:0)+" سهرة • "+(g?g.hrs:0)+" ساعة";
+}
+
+var _tt;
+function toast(msg,clr){
+  var el=document.getElementById("toast");
+  el.textContent=msg; el.style.background=clr||"#22c55e"; el.style.display="block";
+  clearTimeout(_tt); _tt=setTimeout(function(){el.style.display="none"},2500);
+}
+
+function addRec(type){
+  var hrs=type==="6"?2:4,lbl=type==="6"?"سهرة لـ 6":"سهرة لـ 8";
+  recs.unshift({id:Date.now(),date:selDate,type:type,hrs:hrs,lbl:lbl,note:""});
+  save(); toast("✅ اتسجلت "+lbl+" ("+hrs+" ساعات)"); updHdr(); renderHome();
+}
+
+function askDel(id){delId=id;document.getElementById("moverlay").classList.add("open")}
+function cm(){delId=null;document.getElementById("moverlay").classList.remove("open")}
+function cd(){
+  if(!delId) return;
+  recs=recs.filter(function(r){return r.id!==delId});
+  save(); cm(); toast("🗑️ اتمسح","#ef4444"); updHdr();
+  if(tab==="home") renderHome(); else renderHist();
+}
+
+function togNote(id){noteId=noteId===id?null:id; if(tab==="hist") renderHist(); else renderHome()}
+function saveNote(id){
+  var v=document.getElementById("ni"+id);
+  if(!v) return;
+  recs=recs.map(function(r){return r.id===id?Object.assign({},r,{note:v.value}):r});
+  save(); noteId=null; if(tab==="hist") renderHist(); else renderHome();
+}
+
+function go(t){
+  tab=t;
+  document.querySelectorAll(".tb").forEach(function(b,i){b.classList.toggle("on",(i===0&&t==="home")||(i===1&&t==="hist"))});
+  if(t==="home") renderHome(); else renderHist();
+}
+
+function renderHome(){
+  var gs=groups(),h="";
+  h+='<div class="card"><label class="lbl">📅 اختار التاريخ</label>';
+  h+='<input type="date" id="di" value="'+selDate+'" onchange="selDate=this.value;updHdr();updHint()"/>';
+  h+='<div class="hint" id="dh"></div></div>';
+  h+='<div class="nbts">';
+  h+='<button class="nbt t6" onclick="addRec(\'6\')"><span class="ic">🌙</span><span class="nm">سهرة لـ 6</span><span class="sb">= ساعتين</span></button>';
+  h+='<button class="nbt t8" onclick="addRec(\'8\')"><span class="ic">🌛</span><span class="nm">سهرة لـ 8</span><span class="sb">= 4 ساعات</span></button>';
+  h+='</div>';
+  if(gs.length>0){
+    h+='<div class="sec">📊 ملخص الفترات</div>';
+    gs.forEach(function(g){
+      var n6=g.recs.filter(function(r){return r.type==="6"}).length;
+      var n8=g.recs.filter(function(r){return r.type==="8"}).length;
+      var sub=[]; if(n6) sub.push("🌙 "+n6+" سهرة"); if(n8) sub.push("🌛 "+n8+" سهرة");
+      h+='<div class="sc"><div class="sc-l"><div class="n">'+g.lbl+'</div><div class="s">'+sub.join(" • ")+'</div></div>';
+      h+='<div class="sc-r"><div class="num">'+g.hrs+'</div><div class="un">ساعة</div></div></div>';
+    });
+  } else {
+    h+='<div class="empty"><div class="em">📝</div><div>مفيش تسجيلات لسه</div><div style="font-size:12px;margin-top:6px">اضغط على نوع السهرة فوق</div></div>';
+  }
+  document.getElementById("pg").innerHTML=h;
+  updHint();
+}
+
+function updHint(){
+  var el=document.getElementById("dh"); if(!el) return;
+  var p=period(selDate);
+  el.innerHTML=fmtDate(selDate)+' — الفترة: <span>'+p.lbl+'</span>';
+}
+
+function renderHist(){
+  var gs=groups(),h="";
+  if(!gs.length){
+    h='<div class="empty"><div class="em">📋</div><div>السجل فاضي</div></div>';
+    document.getElementById("pg").innerHTML=h; return;
+  }
+  gs.forEach(function(g){
+    h+='<div class="pg"><div class="ph"><div class="pn">'+g.lbl+'</div><div class="pt">'+g.hrs+' ساعة</div></div>';
+    g.recs.forEach(function(r){
+      var ne=noteId===r.id?'<div class="ne"><input id="ni'+r.id+'" value="'+(r.note||'')+'" placeholder="ملاحظة..."/><button class="ns" onclick="saveNote('+r.id+')">✓</button><button class="nc" onclick="togNote('+r.id+')">✕</button></div>':"";
+      h+='<div class="rc '+(r.type==="6"?"t6":"t8")+'"><div class="rt"><div>';
+      h+='<div class="rbdg '+(r.type==="6"?"t6":"t8")+'">'+r.lbl+'</div>';
+      h+='<div class="rdt">'+fmtDate(r.date)+'</div>';
+      if(r.note) h+='<div class="rnote">📝 '+r.note+'</div>';
+      h+='</div><div class="rac"><div class="hbdg">+'+r.hrs+'h</div>';
+      h+='<button class="ibt" onclick="togNote('+r.id+')">✏️</button>';
+      h+='<button class="ibt" onclick="askDel('+r.id+')">🗑️</button>';
+      h+='</div></div>'+ne+'</div>';
+    });
+    h+='</div>';
+  });
+  document.getElementById("pg").innerHTML=h;
+}
+
+// Init
+load();
+selDate=today();
+updHdr();
+renderHome();
+
+// SW
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("./sw.js").catch(function(){});
+}
+</script>
+</body>
+</html>
