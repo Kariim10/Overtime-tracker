@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="theme-color" content="#0d0f1a"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Overtime Tracker"/>
+<title>Overtime Tracker</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0d0f1a;
+  --bg2:#131629;
+  --bg3:#1a1f35;
+  --bg4:#1f2540;
+  --border:#252b45;
+  --accent:#6c63ff;
+  --accent2:#8b85ff;
+  --accent-glow:rgba(108,99,255,.25);
+  --cyan:#00d4ff;
+  --green:#00e5a0;
+  --orange:#ff6b35;
+  --red:#ff4757;
+  --txt:#e8eaf6;
+  --txt2:#8892b0;
+  --txt3:#4a5278;
+}
+body{
+  min-height:100vh;background:var(--bg);color:var(--txt);
+  font-family:'Cairo',Tahoma,Arial,sans-serif;direction:rtl;
+  padding-bottom:60px;
+}
+button{cursor:pointer;font-family:'Cairo',Tahoma,Arial,sans-serif;transition:all .15s}
+button:active{transform:scale(.96)}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.7)}
+
+/* ── HEADER ── */
+#hdr{
+  background:linear-gradient(180deg,#131629 0%,#0d0f1a 100%);
+  border-bottom:1px solid var(--border);
+  padding:20px 16px 16px;position:sticky;top:0;z-index:20;
+}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-icon{
+  width:44px;height:44px;border-radius:14px;
+  background:var(--bg3);border:1.5px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 16px var(--accent-glow);position:relative;
+}
+/* SVG Clock in logo */
+.logo-icon svg{width:26px;height:26px}
+.logo-text .name{
+  font-size:16px;font-weight:900;color:#fff;
+  letter-spacing:.3px;line-height:1.1;
+}
+.logo-text .company{font-size:9px;color:var(--txt3);letter-spacing:2px;margin-top:2px}
+.hdr-right{text-align:center}
+.period-badge{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:10px;padding:6px 14px;
+}
+.period-badge .pb-lbl{font-size:9px;color:var(--txt3);letter-spacing:.5px}
+.period-badge .pb-val{font-size:13px;font-weight:800;color:var(--accent2)}
+
+/* Pills */
+.pills{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pill{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:12px;padding:11px 8px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.pill::before{
+  content:'';position:absolute;top:-30px;left:50%;transform:translateX(-50%);
+  width:60px;height:60px;border-radius:50%;opacity:.07;
+}
+.pill.p-hours::before{background:var(--accent)}
+.pill.p-nights::before{background:var(--cyan)}
+.pill.p-days::before{background:var(--green)}
+.pill .pv{font-size:22px;font-weight:900;line-height:1}
+.pill .pl{font-size:9px;color:var(--txt3);margin-top:3px;letter-spacing:.3px}
+.pill.p-hours .pv{color:var(--accent2)}
+.pill.p-nights .pv{color:var(--cyan)}
+.pill.p-days .pv{color:var(--green)}
+
+/* ── TABS ── */
+#tabs{
+  display:flex;gap:6px;margin:14px 16px 0;
+  background:var(--bg2);border-radius:12px;padding:4px;
+  border:1px solid var(--border);
+}
+.tb{
+  flex:1;padding:9px 4px;border-radius:9px;border:none;
+  font-weight:700;font-size:11px;color:var(--txt3);
+  background:transparent;letter-spacing:.3px;
+}
+.tb.on{background:var(--accent);color:#fff;box-shadow:0 2px 12px var(--accent-glow)}
+
+/* ── PAGE ── */
+#pg{padding:14px 16px 20px}
+
+/* Cards */
+.card{
+  background:var(--bg3);border-radius:16px;padding:15px;
+  margin-bottom:13px;border:1px solid var(--border);
+}
+.card-title{font-size:11px;color:var(--txt3);letter-spacing:.5px;margin-bottom:10px;font-weight:700}
+input[type=date]{
+  width:100%;background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:11px 13px;color:var(--txt);
+  font-size:15px;font-family:'Cairo',Tahoma,Arial,sans-serif;
+}
+.dhint{font-size:11px;color:var(--txt3);margin-top:8px;line-height:1.5}
+.dhint span{color:var(--accent2);font-weight:700}
+
+/* Night Buttons */
+.nbts{display:flex;gap:10px;margin-bottom:13px}
+.nbt{
+  flex:1;padding:18px 10px 16px;border-radius:16px;
+  color:#fff;display:flex;flex-direction:column;
+  align-items:center;border:none;position:relative;overflow:hidden;
+}
+.nbt.t6{background:linear-gradient(150deg,#1a3a5c 0%,#0e5f8a 100%);border:1px solid #1e6fa020}
+.nbt.t8{background:linear-gradient(150deg,#2d1b5e 0%,#5b2d9e 100%);border:1px solid #7c3aed20}
+.nbt .ic{font-size:28px;margin-bottom:6px}
+.nbt .nm{font-size:14px;font-weight:800}
+.nbt .sb{font-size:10px;margin-top:3px;opacity:.7}
+.nbt.t6 .sb{color:#7dd3fc}
+.nbt.t8 .sb{color:#c4b5fd}
+
+/* Extra Day */
+.extra-btn{
+  width:100%;padding:13px 15px;border-radius:14px;border:1px solid #00e5a020;
+  margin-bottom:13px;
+  background:linear-gradient(150deg,#0d2e1f 0%,#0f3d28 100%);
+  color:#fff;display:flex;align-items:center;gap:12px;
+}
+.eb-ic{font-size:22px}
+.eb-nm{font-size:13px;font-weight:800;text-align:right}
+.eb-sb{font-size:10px;color:#6ee7b7;text-align:right;margin-top:2px}
+
+/* Info rows */
+.irow{display:flex;justify-content:space-between;align-items:center;padding:7px 0}
+.irow .il{font-size:12px;color:var(--txt2)}
+.irow .iv{font-size:12px;font-weight:700}
+.iv.acc{color:var(--accent2)}
+.iv.cy{color:var(--cyan)}
+.iv.gr{color:var(--green)}
+.iv.or{color:var(--orange)}
+.sep{height:1px;background:var(--border);margin:2px 0}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0}
+.total-row .tl{font-size:13px;font-weight:800;color:var(--txt)}
+.total-row .tv{font-size:18px;font-weight:900;color:var(--accent2)}
+
+/* Summary */
+.sec-lbl{font-size:10px;color:var(--txt3);letter-spacing:1px;margin-bottom:10px;font-weight:700}
+.sc{
+  background:var(--bg3);border-radius:14px;padding:14px;
+  margin-bottom:10px;border:1px solid var(--border);
+}
+.sc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
+.sc-name{font-size:14px;font-weight:800;color:#fff}
+.sc-badges{display:flex;gap:6px}
+.scb{
+  border-radius:8px;padding:5px 10px;text-align:center;
+  border:1px solid var(--border);background:var(--bg2);
+}
+.scb .bv{font-size:16px;font-weight:900;line-height:1}
+.scb .bl{font-size:8px;color:var(--txt3);margin-top:2px}
+.scb.acc .bv{color:var(--accent2)}
+.scb.gr .bv{color:var(--green)}
+.sc-tags{display:flex;gap:5px;flex-wrap:wrap}
+.tag{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;border:1px solid}
+.tag.t6{background:#0c4a6e22;color:#7dd3fc;border-color:#0891b233}
+.tag.t8{background:#3b076422;color:#c4b5fd;border-color:#7c3aed33}
+.tag.ex{background:#06653022;color:#6ee7b7;border-color:#10b98133}
+.del-period{
+  width:100%;margin-top:11px;padding:8px;border-radius:9px;
+  border:1px solid #ff475722;background:#ff47570d;
+  color:var(--red);font-size:11px;font-weight:700;
+}
+
+/* History */
+.ph{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;margin-bottom:10px;border-bottom:1px solid var(--border)}
+.ph-name{font-weight:800;color:var(--accent2);font-size:14px}
+.ph-nums{display:flex;gap:6px}
+.ph-badge{border-radius:7px;padding:3px 9px;font-weight:800;font-size:12px;border:1px solid}
+.ph-badge.h{color:var(--accent2);border-color:var(--accent);background:#6c63ff11}
+.ph-badge.d{color:var(--green);border-color:var(--green);background:#00e5a011}
+.grp{margin-bottom:22px}
+
+.rc{background:var(--bg3);border-radius:11px;padding:12px;margin-bottom:8px}
+.rc.t6{border:1px solid #0891b233}
+.rc.t8{border:1px solid #7c3aed33}
+.rc.ex{border:1px solid #10b98133}
+.rc-top{display:flex;justify-content:space-between;align-items:flex-start}
+.rbdg{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;margin-bottom:4px;border:1px solid}
+.rbdg.t6{background:#0c4a6e33;color:#7dd3fc;border-color:#0891b244}
+.rbdg.t8{background:#3b076433;color:#c4b5fd;border-color:#7c3aed44}
+.rbdg.ex{background:#06653033;color:#6ee7b7;border-color:#10b98144}
+.rdate{font-size:12px;color:var(--txt2)}
+.rnote{font-size:11px;color:var(--txt3);margin-top:3px;font-style:italic}
+.rac{display:flex;gap:5px;align-items:center}
+.hbdg{background:var(--bg2);border-radius:6px;padding:4px 8px;font-weight:800;font-size:13px;border:1px solid var(--border)}
+.hbdg.hrs{color:var(--accent2)}
+.hbdg.day{color:var(--green)}
+.ibt{background:none;border:none;font-size:13px;padding:4px;opacity:.5}
+.ne{margin-top:10px;display:flex;gap:6px}
+.ne input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--txt);font-size:12px;font-family:'Cairo',Tahoma,Arial,sans-serif}
+.ns{padding:7px 12px;border-radius:8px;border:none;background:var(--green);color:#0d0f1a;font-weight:700}
+.nc{padding:7px 12px;border-radius:8px;border:none;background:var(--bg4);color:var(--txt3)}
+
+.empty{text-align:center;padding:50px 20px;color:var(--txt3)}
+.empty .em{font-size:44px;margin-bottom:12px}
+.empty .es{font-size:12px;margin-top:6px;line-height:1.6}
+
+/* Toast */
+#toast{
+  position:fixed;top:72px;left:50%;transform:translateX(-50%);
+  border-radius:10px;padding:10px 20px;font-weight:700;font-size:13px;
+  z-index:999;box-shadow:0 6px 24px rgba(0,0,0,.5);
+  display:none;white-space:nowrap;color:#fff;
+}
+
+/* Modal */
+#mov{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:100}
+#mov.open{display:flex}
+#mbox{background:var(--bg2);border-radius:18px;padding:24px;margin:20px;border:1px solid var(--red);text-align:center;max-width:290px;width:100%}
+.m-ic{font-size:34px;margin-bottom:10px}
+.m-title{font-size:15px;font-weight:800;margin-bottom:8px}
+.m-sub{font-size:13px;color:var(--txt2);margin-bottom:20px;line-height:1.6}
+.m-btns{display:flex;gap:8px}
+.m-cancel{flex:1;padding:11px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--txt3);font-size:13px;font-family:inherit;font-weight:700}
+.m-del{flex:1;padding:11px;border-radius:10px;border:none;background:var(--red);color:#fff;font-size:13px;font-weight:800;font-family:inherit}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div class="hdr-top">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="13" cy="13" r="11" stroke="#6c63ff" stroke-width="1.8"/>
+          <circle cx="13" cy="13" r="1.5" fill="#6c63ff"/>
+          <line x1="13" y1="13" x2="13" y2="5.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="13" y1="13" x2="17.5" y2="16" stroke="#6c63ff" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="13" y1="4" x2="13" y2="5.5" stroke="#6c63ff" stroke-width="2" stroke-linecap="round"/>
+          <line x1="22" y1="13" x2="20.5" y2="13" stroke="#6c63ff" stroke-width="2" stroke-linecap="round"/>
+          <line x1="4" y1="13" x2="5.5" y2="13" stroke="#6c63ff" stroke-width="2" stroke-linecap="round"/>
+          <line x1="13" y1="22" x2="13" y2="20.5" stroke="#6c63ff" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <div class="name">Overtime Tracker</div>
+        <div class="company">T&amp;C GARMENTS</div>
+      </div>
+    </div>
+    <div class="period-badge">
+      <div class="pb-lbl">الفترة الحالية</div>
+      <div class="pb-val" id="hdr-period">—</div>
+    </div>
+  </div>
+  <div class="pills">
+    <div class="pill p-hours"><div class="pv" id="hp-hrs">0</div><div class="pl">ساعة</div></div>
+    <div class="pill p-nights"><div class="pv" id="hp-nights">0</div><div class="pl">سهرة</div></div>
+    <div class="pill p-days"><div class="pv" id="hp-days">0</div><div class="pl">يوم إضافي</div></div>
+  </div>
+</div>
+
+<div id="tabs">
+  <button class="tb on" onclick="go('home')">➕ تسجيل</button>
+  <button class="tb" onclick="go('hist')">📋 السجل</button>
+  <button class="tb" onclick="go('info')">ℹ️ معلومات</button>
+</div>
+
+<div id="pg"></div>
+<div id="toast"></div>
+
+<div id="mov">
+  <div id="mbox">
+    <div class="m-ic">⚠️</div>
+    <div class="m-title" id="m-title">تأكيد الحذف</div>
+    <div class="m-sub" id="m-sub">هتحذف التسجيل ده؟</div>
+    <div class="m-btns">
+      <button class="m-cancel" onclick="cm()">إلغاء</button>
+      <button class="m-del" onclick="cd()">احذف</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var KEY="ot_v2",recs=[],tab="home",delId=null,delPer=null,noteId=null,selDate="";
+var MN=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+
+function load(){try{recs=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){recs=[]}}
+function save(){localStorage.setItem(KEY,JSON.stringify(recs))}
+function today(){return new Date().toISOString().split("T")[0]}
+
+function period(ds){
+  var d=new Date(ds+"T12:00:00"),day=d.getDate(),m=d.getMonth(),y=d.getFullYear();
+  if(day<=20) return {lbl:MN[m]+" "+y,key:y*100+m};
+  var nm=(m+1)%12,ny=nm===0?y+1:y;
+  return {lbl:MN[nm]+" "+ny,key:ny*100+nm};
+}
+function fmtDate(ds){
+  return new Date(ds+"T12:00:00").toLocaleDateString("ar-EG",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+}
+function groups(){
+  var map={};
+  recs.forEach(function(r){
+    var p=period(r.date);
+    if(!map[p.key]) map[p.key]={lbl:p.lbl,key:p.key,recs:[],hrs:0,days:0};
+    map[p.key].recs.push(r);
+    if(r.type==="ex") map[p.key].days++;
+    else map[p.key].hrs+=r.hrs;
+  });
+  Object.values(map).forEach(function(g){g.recs.sort(function(a,b){return b.date.localeCompare(a.date)})});
+  return Object.values(map).sort(function(a,b){return b.key-a.key});
+}
+function curGroup(){
+  var p=period(selDate),gs=groups();
+  return gs.find(function(g){return g.key===p.key})||{hrs:0,days:0,recs:[]};
+}
+function updHdr(){
+  var p=period(selDate),g=curGroup();
+  document.getElementById("hdr-period").textContent=p.lbl;
+  document.getElementById("hp-hrs").textContent=g.hrs;
+  document.getElementById("hp-nights").textContent=g.recs.filter(function(r){return r.type!=="ex"}).length;
+  document.getElementById("hp-days").textContent=g.days;
+}
+
+var _tt;
+function toast(msg,clr){
+  var el=document.getElementById("toast");
+  el.textContent=msg;el.style.background=clr||"#00e5a0";el.style.color=clr?"#fff":"#0d0f1a";
+  el.style.display="block";clearTimeout(_tt);
+  _tt=setTimeout(function(){el.style.display="none"},2500);
+}
+
+function addRec(type){
+  var hrs=type==="6"?2:type==="8"?4:0;
+  var lbl=type==="6"?"سهرة لـ 6":type==="8"?"سهرة لـ 8":"يوم إضافي";
+  recs.unshift({id:Date.now(),date:selDate,type:type,hrs:hrs,lbl:lbl,note:""});
+  save();toast("✅ اتسجل: "+lbl);updHdr();renderHome();
+}
+function askDel(id){
+  delId=id;delPer=null;
+  document.getElementById("m-title").textContent="تأكيد الحذف";
+  document.getElementById("m-sub").textContent="هتحذف التسجيل ده؟";
+  document.getElementById("mov").classList.add("open");
+}
+function askDelPer(key){
+  delId=null;delPer=key;
+  var g=groups().find(function(x){return x.key===key});
+  document.getElementById("m-title").textContent="حذف فترة كاملة";
+  document.getElementById("m-sub").textContent="هتحذف كل سجلات فترة "+(g?g.lbl:"")+"؟\nمش هترجعهم تاني.";
+  document.getElementById("mov").classList.add("open");
+}
+function cm(){delId=null;delPer=null;document.getElementById("mov").classList.remove("open")}
+function cd(){
+  if(delId){recs=recs.filter(function(r){return r.id!==delId});toast("🗑️ اتمسح","#ff4757")}
+  else if(delPer){
+    var g=groups().find(function(x){return x.key===delPer});
+    if(g){var ids=g.recs.map(function(r){return r.id});recs=recs.filter(function(r){return ids.indexOf(r.id)===-1})}
+    toast("🗑️ اتمسحت الفترة","#ff4757");
+  }
+  save();cm();updHdr();
+  if(tab==="home")renderHome();else if(tab==="hist")renderHist();
+}
+function togNote(id){noteId=noteId===id?null:id;if(tab==="hist")renderHist();else renderHome()}
+function saveNote(id){
+  var v=document.getElementById("ni"+id);if(!v)return;
+  recs=recs.map(function(r){return r.id===id?Object.assign({},r,{note:v.value}):r});
+  save();noteId=null;if(tab==="hist")renderHist();else renderHome();
+}
+function go(t){
+  tab=t;
+  var tb=document.querySelectorAll(".tb");
+  tb[0].classList.toggle("on",t==="home");
+  tb[1].classList.toggle("on",t==="hist");
+  tb[2].classList.toggle("on",t==="info");
+  if(t==="home")renderHome();else if(t==="hist")renderHist();else renderInfo();
+}
+
+function renderHome(){
+  var gs=groups(),g=curGroup(),h="";
+  var n6=g.recs.filter(function(r){return r.type==="6"}).length;
+  var n8=g.recs.filter(function(r){return r.type==="8"}).length;
+
+  h+='<div class="card"><div class="card-title">اختار التاريخ</div>';
+  h+='<input type="date" id="di" value="'+selDate+'" onchange="selDate=this.value;updHdr();updHint()"/>';
+  h+='<div class="dhint" id="dh"></div></div>';
+
+  h+='<div class="nbts">';
+  h+='<button class="nbt t6" onclick="addRec(\'6\')"><span class="ic">🌙</span><span class="nm">سهرة لـ 6</span><span class="sb">= ساعتين أوفر تايم</span></button>';
+  h+='<button class="nbt t8" onclick="addRec(\'8\')"><span class="ic">🌛</span><span class="nm">سهرة لـ 8</span><span class="sb">= 4 ساعات أوفر تايم</span></button>';
+  h+='</div>';
+
+  h+='<button class="extra-btn" onclick="addRec(\'ex\')">';
+  h+='<span class="eb-ic">📅</span><div><div class="eb-nm">يوم إضافي</div><div class="eb-sb">جمعة أو إجازة رسمية — بيتحسب لوحده</div></div></button>';
+
+  if(g.recs.length>0){
+    h+='<div class="card">';
+    h+='<div class="irow"><span class="il">الفترة</span><span class="iv acc">'+period(selDate).lbl+'</span></div>';
+    h+='<div class="sep"></div>';
+    if(n6>0) h+='<div class="irow"><span class="il">🌙 سهرات لـ 6</span><span class="iv cy">'+n6+' × 2 = '+(n6*2)+' ساعة</span></div>';
+    if(n8>0) h+='<div class="irow"><span class="il">🌛 سهرات لـ 8</span><span class="iv acc">'+n8+' × 4 = '+(n8*4)+' ساعة</span></div>';
+    if(g.days>0) h+='<div class="irow"><span class="il">📅 أيام إضافية</span><span class="iv gr">'+g.days+' يوم</span></div>';
+    h+='<div class="sep"></div>';
+    h+='<div class="total-row"><span class="tl">إجمالي ساعات السهر</span><span class="tv">'+g.hrs+' ساعة</span></div>';
+    h+='</div>';
+  }
+
+  if(gs.length>0){
+    h+='<div class="sec-lbl">كل الفترات</div>';
+    gs.forEach(function(gg){
+      var gn6=gg.recs.filter(function(r){return r.type==="6"}).length;
+      var gn8=gg.recs.filter(function(r){return r.type==="8"}).length;
+      h+='<div class="sc"><div class="sc-head"><div class="sc-name">'+gg.lbl+'</div>';
+      h+='<div class="sc-badges"><div class="scb acc"><div class="bv">'+gg.hrs+'</div><div class="bl">ساعة</div></div>';
+      if(gg.days>0) h+='<div class="scb gr"><div class="bv">'+gg.days+'</div><div class="bl">يوم</div></div>';
+      h+='</div></div><div class="sc-tags">';
+      if(gn6>0) h+='<span class="tag t6">🌙 '+gn6+' سهرة لـ 6</span>';
+      if(gn8>0) h+='<span class="tag t8">🌛 '+gn8+' سهرة لـ 8</span>';
+      if(gg.days>0) h+='<span class="tag ex">📅 '+gg.days+' يوم إضافي</span>';
+      h+='</div><button class="del-period" onclick="askDelPer('+gg.key+')">🗑️ حذف سجلات '+gg.lbl+' كلها</button></div>';
+    });
+  } else {
+    h+='<div class="empty"><div class="em">🕐</div><div>مفيش سجلات لسه</div><div class="es">اضغط على نوع السهرة أو اليوم الإضافي فوق</div></div>';
+  }
+  document.getElementById("pg").innerHTML=h;
+  updHint();
+}
+
+function updHint(){
+  var el=document.getElementById("dh");if(!el)return;
+  var p=period(selDate);
+  el.innerHTML=fmtDate(selDate)+'<br/><span>'+p.lbl+'</span>';
+}
+
+function renderHist(){
+  var gs=groups(),h="";
+  if(!gs.length){
+    document.getElementById("pg").innerHTML='<div class="empty"><div class="em">📋</div><div>السجل فاضي</div></div>';
+    return;
+  }
+  gs.forEach(function(g){
+    h+='<div class="grp"><div class="ph"><div class="ph-name">'+g.lbl+'</div><div class="ph-nums">';
+    h+='<div class="ph-badge h">'+g.hrs+'h</div>';
+    if(g.days>0) h+='<div class="ph-badge d">'+g.days+'d</div>';
+    h+='</div></div>';
+    g.recs.forEach(function(r){
+      var cls=r.type==="6"?"t6":r.type==="8"?"t8":"ex";
+      var hbdg=r.type==="ex"?'<div class="hbdg day">يوم</div>':'<div class="hbdg hrs">+'+r.hrs+'h</div>';
+      var ne=noteId===r.id?'<div class="ne"><input id="ni'+r.id+'" value="'+(r.note||'')+'" placeholder="ملاحظة..."/><button class="ns" onclick="saveNote('+r.id+')">✓</button><button class="nc" onclick="togNote('+r.id+')">✕</button></div>':"";
+      h+='<div class="rc '+cls+'"><div class="rc-top"><div><div class="rbdg '+cls+'">'+r.lbl+'</div><div class="rdate">'+fmtDate(r.date)+'</div>';
+      if(r.note) h+='<div class="rnote">📝 '+r.note+'</div>';
+      h+='</div><div class="rac">'+hbdg+'<button class="ibt" onclick="togNote('+r.id+')">✏️</button><button class="ibt" onclick="askDel('+r.id+')">🗑️</button></div></div>'+ne+'</div>';
+    });
+    h+='<button class="del-period" onclick="askDelPer('+g.key+')">🗑️ حذف فترة '+g.lbl+' كلها</button></div>';
+  });
+  document.getElementById("pg").innerHTML=h;
+}
+
+function renderInfo(){
+  document.getElementById("pg").innerHTML='<div class="card"><div class="card-title">طريقة الحساب</div><div class="irow"><span class="il">🌙 سهرة لـ 6</span><span class="iv cy">= ساعتين أوفر تايم</span></div><div class="irow"><span class="il">🌛 سهرة لـ 8</span><span class="iv acc">= 4 ساعات أوفر تايم</span></div><div class="irow"><span class="il">📅 يوم إضافي</span><span class="iv gr">بيتحسب لوحده بدون ساعات</span></div></div><div class="card"><div class="card-title">التقفيلة</div><div style="font-size:13px;color:var(--txt2);line-height:2">كل شهر بيتقفل من <strong style="color:#fff">يوم 1</strong> لـ <strong style="color:#fff">يوم 20</strong><br/>أي سهرة بعد يوم 20 بتتحسب للشهر الجديد<br/>مثال: سهرة يوم 25 نوفمبر → بتتسجل في ديسمبر</div></div><div class="card"><div class="card-title">البيانات</div><div style="font-size:13px;color:var(--txt2);line-height:2">البيانات محفوظة على جهازك<br/>السجلات القديمة بتفضل موجودة تلقائياً<br/>تقدر تحذف فترة كاملة من زر الحذف</div></div>';
+}
+
+load();selDate=today();updHdr();renderHome();
+if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js").catch(function(){})}
+</script>
+</body>
+</html>
