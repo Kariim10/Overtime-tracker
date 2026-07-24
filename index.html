@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="theme-color" content="#0d0f1a"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Overtime Tracker"/>
+<title>Overtime Tracker</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0d0f1a;--bg2:#131629;--bg3:#1a1f35;--bg4:#1f2540;--border:#252b45;
+  --accent:#6c63ff;--accent2:#8b85ff;--accent-glow:rgba(108,99,255,.25);
+  --cyan:#00d4ff;--green:#00e5a0;--orange:#ff6b35;--red:#ff4757;
+  --txt:#e8eaf6;--txt2:#8892b0;--txt3:#4a5278;
+}
+body{min-height:100vh;background:var(--bg);color:var(--txt);font-family:'Cairo',Tahoma,Arial,sans-serif;direction:rtl;padding-bottom:60px}
+button{cursor:pointer;font-family:'Cairo',Tahoma,Arial,sans-serif;transition:all .15s}
+button:active{transform:scale(.96)}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.7)}
+
+#hdr{background:linear-gradient(180deg,#131629 0%,#0d0f1a 100%);border-bottom:1px solid var(--border);padding:20px 16px 16px;position:sticky;top:0;z-index:20}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-icon{width:44px;height:44px;border-radius:14px;background:var(--bg3);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px var(--accent-glow)}
+.logo-icon svg{width:26px;height:26px}
+.logo-name{font-size:16px;font-weight:900;color:#fff;letter-spacing:.3px;line-height:1.1}
+.logo-company{font-size:9px;color:var(--txt3);letter-spacing:2px;margin-top:2px}
+.period-badge{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:6px 14px;text-align:center}
+.pb-lbl{font-size:9px;color:var(--txt3);letter-spacing:.5px}
+.pb-val{font-size:13px;font-weight:800;color:var(--accent2)}
+
+.pills{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pill{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:11px 8px;text-align:center;position:relative;overflow:hidden}
+.pill .pv{font-size:22px;font-weight:900;line-height:1}
+.pill .pl{font-size:9px;color:var(--txt3);margin-top:3px}
+.pill.p-hours .pv{color:var(--accent2)}
+.pill.p-nights .pv{color:var(--cyan)}
+.pill.p-days .pv{color:var(--green)}
+
+#tabs{display:flex;gap:6px;margin:14px 16px 0;background:var(--bg2);border-radius:12px;padding:4px;border:1px solid var(--border)}
+.tb{flex:1;padding:9px 4px;border-radius:9px;border:none;font-weight:700;font-size:12px;color:var(--txt3);background:transparent;letter-spacing:.3px}
+.tb.on{background:var(--accent);color:#fff;box-shadow:0 2px 12px var(--accent-glow)}
+
+#pg{padding:14px 16px 20px}
+
+.card{background:var(--bg3);border-radius:16px;padding:15px;margin-bottom:13px;border:1px solid var(--border)}
+.card-title{font-size:11px;color:var(--txt3);letter-spacing:.5px;margin-bottom:10px;font-weight:700}
+input[type=date]{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--txt);font-size:15px;font-family:'Cairo',Tahoma,Arial,sans-serif}
+.dhint{font-size:11px;color:var(--txt3);margin-top:8px;line-height:1.5}
+.dhint span{color:var(--accent2);font-weight:700}
+
+.nbts{display:flex;gap:10px;margin-bottom:13px}
+.nbt{flex:1;padding:20px 10px 18px;border-radius:16px;color:#fff;display:flex;flex-direction:column;align-items:center;border:none;position:relative;overflow:hidden}
+.nbt.t6{background:linear-gradient(150deg,#1a3a5c 0%,#0e5f8a 100%);border:1px solid #1e6fa020}
+.nbt.t8{background:linear-gradient(150deg,#2d1b5e 0%,#5b2d9e 100%);border:1px solid #7c3aed20}
+.nbt .ic{font-size:30px;margin-bottom:6px}
+.nbt .nm{font-size:14px;font-weight:800}
+
+.extra-btn{width:100%;padding:14px 15px;border-radius:14px;border:1px solid #00e5a020;margin-bottom:13px;background:linear-gradient(150deg,#0d2e1f 0%,#0f3d28 100%);color:#fff;display:flex;flex-direction:column;align-items:flex-start;text-align:right}
+.eb-nm{font-size:14px;font-weight:800;margin-bottom:3px}
+.eb-sb{font-size:11px;color:#6ee7b7}
+
+.irow{display:flex;justify-content:space-between;align-items:center;padding:7px 0}
+.irow .il{font-size:12px;color:var(--txt2)}
+.irow .iv{font-size:12px;font-weight:700}
+.iv.acc{color:var(--accent2)}
+.iv.cy{color:var(--cyan)}
+.iv.gr{color:var(--green)}
+.sep{height:1px;background:var(--border);margin:2px 0}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0}
+.total-row .tl{font-size:13px;font-weight:800;color:var(--txt)}
+.total-row .tv{font-size:18px;font-weight:900;color:var(--accent2)}
+
+.export-btn{width:100%;margin-top:12px;padding:9px;border-radius:9px;border:1px solid #00e5a033;background:#00e5a011;color:var(--green);font-size:12px;font-weight:700}
+
+.sec-lbl{font-size:10px;color:var(--txt3);letter-spacing:1px;margin-bottom:10px;font-weight:700}
+.sc{background:var(--bg3);border-radius:14px;padding:14px;margin-bottom:10px;border:1px solid var(--border)}
+.sc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
+.sc-name{font-size:14px;font-weight:800;color:#fff}
+.sc-badges{display:flex;gap:6px}
+.scb{border-radius:8px;padding:5px 10px;text-align:center;border:1px solid var(--border);background:var(--bg2)}
+.scb .bv{font-size:16px;font-weight:900;line-height:1}
+.scb .bl{font-size:8px;color:var(--txt3);margin-top:2px}
+.scb.acc .bv{color:var(--accent2)}
+.scb.gr .bv{color:var(--green)}
+.sc-detail-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.sc-det{padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;border:1px solid}
+.sc-det.t6{background:#0c4a6e22;color:#7dd3fc;border-color:#0891b233}
+.sc-det.t8{background:#3b076422;color:#c4b5fd;border-color:#7c3aed33}
+.sc-det.ex{background:#06653022;color:#6ee7b7;border-color:#10b98133}
+.sc-actions{display:flex;gap:8px}
+.export-btn-sm{flex:1;padding:7px;border-radius:8px;border:1px solid #00e5a033;background:#00e5a011;color:var(--green);font-size:11px;font-weight:700}
+.del-period{flex:1;padding:7px;border-radius:8px;border:1px solid #ff475722;background:#ff47570d;color:var(--red);font-size:11px;font-weight:700}
+
+.ph{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;margin-bottom:10px;border-bottom:1px solid var(--border)}
+.ph-name{font-weight:800;color:var(--accent2);font-size:14px}
+.ph-nums{display:flex;gap:6px}
+.ph-badge{border-radius:7px;padding:3px 9px;font-weight:800;font-size:12px;border:1px solid}
+.ph-badge.h{color:var(--accent2);border-color:var(--accent);background:#6c63ff11}
+.ph-badge.d{color:var(--green);border-color:var(--green);background:#00e5a011}
+.grp{margin-bottom:22px}
+
+.rc{background:var(--bg3);border-radius:11px;padding:12px;margin-bottom:8px}
+.rc.t6{border:1px solid #0891b233}
+.rc.t8{border:1px solid #7c3aed33}
+.rc.ex{border:1px solid #10b98133}
+.rc-top{display:flex;justify-content:space-between;align-items:flex-start}
+.rbdg{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;margin-bottom:4px;border:1px solid}
+.rbdg.t6{background:#0c4a6e33;color:#7dd3fc;border-color:#0891b244}
+.rbdg.t8{background:#3b076433;color:#c4b5fd;border-color:#7c3aed44}
+.rbdg.ex{background:#06653033;color:#6ee7b7;border-color:#10b98144}
+.rdate{font-size:12px;color:var(--txt2)}
+.rnote{font-size:11px;color:var(--txt3);margin-top:3px;font-style:italic}
+.rac{display:flex;gap:5px;align-items:center}
+.hbdg{background:var(--bg2);border-radius:6px;padding:4px 8px;font-weight:800;font-size:13px;border:1px solid var(--border)}
+.hbdg.hrs{color:var(--accent2)}
+.hbdg.day{color:var(--green)}
+.ibt{background:none;border:none;font-size:13px;padding:4px;opacity:.5}
+.ne{margin-top:10px;display:flex;gap:6px}
+.ne input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--txt);font-size:12px;font-family:'Cairo',Tahoma,Arial,sans-serif}
+.ns{padding:7px 12px;border-radius:8px;border:none;background:var(--green);color:#0d0f1a;font-weight:700}
+.nc{padding:7px 12px;border-radius:8px;border:none;background:var(--bg4);color:var(--txt3)}
+
+.empty{text-align:center;padding:50px 20px;color:var(--txt3)}
+.empty .em{font-size:44px;margin-bottom:12px}
+.empty .es{font-size:12px;margin-top:6px;line-height:1.6}
+
+#toast{position:fixed;top:72px;left:50%;transform:translateX(-50%);border-radius:10px;padding:10px 20px;font-weight:700;font-size:13px;z-index:999;box-shadow:0 6px 24px rgba(0,0,0,.5);display:none;white-space:nowrap;color:#fff}
+
+#mov{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:100}
+#mov.open{display:flex}
+#mbox{background:var(--bg2);border-radius:18px;padding:24px;margin:20px;border:1px solid var(--red);text-align:center;max-width:290px;width:100%}
+.m-ic{font-size:34px;margin-bottom:10px}
+.m-title{font-size:15px;font-weight:800;margin-bottom:8px}
+.m-sub{font-size:13px;color:var(--txt2);margin-bottom:20px;line-height:1.6;white-space:pre-line}
+.m-btns{display:flex;gap:8px}
+.m-cancel{flex:1;padding:11px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--txt3);font-size:13px;font-family:inherit;font-weight:700}
+.m-del{flex:1;padding:11px;border-radius:10px;border:none;background:var(--red);color:#fff;font-size:13px;font-weight:800;font-family:inherit}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div class="hdr-top">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 26 26" fill="none">
+          <circle cx="13" cy="13" r="11" stroke="#6c63ff" stroke-width="1.8"/>
+          <circle cx="13" cy="13" r="1.5" fill="#6c63ff"/>
+          <line x1="13" y1="13" x2="13" y2="5.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="13" y1="13" x2="17.5" y2="16" stroke="#6c63ff" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="13" y1="4" x2="13" y2="5.5" stroke="#6c63ff" stroke-width="2" stroke-linecap="round"/>
+          <line x1="22" y1="13" x2="20.5" y2="13" stroke="#6c63ff" stroke-width="2" stroke-linecap="round"/>
+          <line x1="4" y1="13" x2="5.5" y2="13" stroke="#6c63ff" stroke-width="2" stroke-linecap="round"/>
+          <line x1="13" y1="22" x2="13" y2="20.5" stroke="#6c63ff" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-name">Overtime Tracker</div>
+        <div class="logo-company">T&amp;C GARMENTS</div>
+      </div>
+    </div>
+    <div class="period-badge">
+      <div class="pb-lbl">الفترة الحالية</div>
+      <div class="pb-val" id="hdr-period">—</div>
+    </div>
+  </div>
+  <div class="pills">
+    <div class="pill p-hours"><div class="pv" id="hp-hrs">0</div><div class="pl">ساعة</div></div>
+    <div class="pill p-nights"><div class="pv" id="hp-nights">0</div><div class="pl">سهرة</div></div>
+    <div class="pill p-days"><div class="pv" id="hp-days">0</div><div class="pl">يوم إضافي</div></div>
+  </div>
+</div>
+
+<div id="tabs">
+  <button class="tb on" onclick="go('home')">➕ تسجيل</button>
+  <button class="tb" onclick="go('hist')">📋 السجل</button>
+</div>
+
+<div id="pg"></div>
+<div id="toast"></div>
+
+<div id="mov">
+  <div id="mbox">
+    <div class="m-ic">⚠️</div>
+    <div class="m-title" id="m-title">تأكيد الحذف</div>
+    <div class="m-sub" id="m-sub">هتحذف التسجيل ده؟</div>
+    <div class="m-btns">
+      <button class="m-cancel" onclick="cm()">إلغاء</button>
+      <button class="m-del" onclick="cd()">احذف</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var KEY="ot_v2",recs=[],tab="home",delId=null,delPer=null,noteId=null,selDate="";
+var MN=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+
+function load(){try{recs=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){recs=[]}}
+function save(){localStorage.setItem(KEY,JSON.stringify(recs))}
+function today(){return new Date().toISOString().split("T")[0]}
+
+function period(ds){
+  var d=new Date(ds+"T12:00:00"),day=d.getDate(),m=d.getMonth(),y=d.getFullYear();
+  if(day<=20) return {lbl:MN[m]+" "+y,key:y*100+m};
+  var nm=(m+1)%12,ny=nm===0?y+1:y;
+  return {lbl:MN[nm]+" "+ny,key:ny*100+nm};
+}
+function fmtDate(ds){
+  return new Date(ds+"T12:00:00").toLocaleDateString("ar-EG",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+}
+function hrsWord(n){return n===1?"ساعة":n===2?"ساعتان":n<=10?"ساعات":"ساعة"}
+function daysWord(n){return n===1?"يوم":n===2?"يومان":n<=10?"أيام":"يوم"}
+
+function groups(){
+  var map={};
+  recs.forEach(function(r){
+    var p=period(r.date);
+    if(!map[p.key]) map[p.key]={lbl:p.lbl,key:p.key,recs:[],hrs:0,days:0};
+    map[p.key].recs.push(r);
+    if(r.type==="ex") map[p.key].days++;
+    else map[p.key].hrs+=r.hrs;
+  });
+  Object.values(map).forEach(function(g){g.recs.sort(function(a,b){return b.date.localeCompare(a.date)})});
+  return Object.values(map).sort(function(a,b){return b.key-a.key});
+}
+function curGroup(){
+  var p=period(selDate),gs=groups();
+  return gs.find(function(g){return g.key===p.key})||{hrs:0,days:0,recs:[]};
+}
+function updHdr(){
+  var p=period(selDate),g=curGroup();
+  document.getElementById("hdr-period").textContent=p.lbl;
+  document.getElementById("hp-hrs").textContent=g.hrs;
+  document.getElementById("hp-nights").textContent=g.recs.filter(function(r){return r.type!=="ex"}).length;
+  document.getElementById("hp-days").textContent=g.days;
+}
+
+var _tt;
+function toast(msg,clr,txtClr){
+  var el=document.getElementById("toast");
+  el.textContent=msg;
+  el.style.background=clr||"#00e5a0";
+  el.style.color=txtClr||"#0d0f1a";
+  el.style.display="block";
+  clearTimeout(_tt);
+  _tt=setTimeout(function(){el.style.display="none"},2500);
+}
+
+function addRec(type){
+  var hrs=type==="6"?2:type==="8"?4:0;
+  var lbl=type==="6"?"سهرة لـ 6":type==="8"?"سهرة لـ 8":"يوم إضافي";
+  recs.unshift({id:Date.now(),date:selDate,type:type,hrs:hrs,lbl:lbl,note:""});
+  save();
+  toast("✅ اتسجل: "+lbl,"#00e5a0","#0d0f1a");
+  updHdr();
+  renderHome();
+}
+
+function askDel(id){
+  delId=id;delPer=null;
+  document.getElementById("m-title").textContent="تأكيد الحذف";
+  document.getElementById("m-sub").textContent="هتحذف التسجيل ده؟";
+  document.getElementById("mov").classList.add("open");
+}
+function askDelPer(key){
+  delId=null;delPer=key;
+  var g=groups().find(function(x){return x.key===key});
+  document.getElementById("m-title").textContent="حذف فترة كاملة";
+  document.getElementById("m-sub").textContent="هتحذف كل سجلات فترة "+(g?g.lbl:"")+"?\nمش هترجعهم تاني.";
+  document.getElementById("mov").classList.add("open");
+}
+function cm(){
+  delId=null;delPer=null;
+  document.getElementById("mov").classList.remove("open");
+}
+function cd(){
+  if(delId){
+    recs=recs.filter(function(r){return r.id!==delId});
+    toast("🗑️ اتمسح","#ff4757","#fff");
+  } else if(delPer){
+    var g=groups().find(function(x){return x.key===delPer});
+    if(g){
+      var ids=g.recs.map(function(r){return r.id});
+      recs=recs.filter(function(r){return ids.indexOf(r.id)===-1});
+    }
+    toast("🗑️ اتمسحت الفترة","#ff4757","#fff");
+  }
+  save();cm();updHdr();
+  if(tab==="home") renderHome(); else renderHist();
+}
+
+function togNote(id){
+  noteId=noteId===id?null:id;
+  if(tab==="hist") renderHist(); else renderHome();
+}
+function saveNote(id){
+  var inp=document.getElementById("ni"+id);
+  if(!inp) return;
+  recs=recs.map(function(r){return r.id===id?Object.assign({},r,{note:inp.value}):r});
+  save();noteId=null;
+  if(tab==="hist") renderHist(); else renderHome();
+}
+
+function go(t){
+  tab=t;
+  var tbs=document.querySelectorAll(".tb");
+  tbs[0].classList.toggle("on",t==="home");
+  tbs[1].classList.toggle("on",t==="hist");
+  if(t==="home") renderHome(); else renderHist();
+}
+
+function exportPeriod(key){
+  var g=groups().find(function(x){return x.key===key});
+  if(!g) return;
+  var lines=[];
+  lines.push("Overtime Tracker - T&C Garments");
+  lines.push("فترة: "+g.lbl);
+  lines.push("تاريخ التصدير: "+new Date().toLocaleDateString("ar-EG"));
+  lines.push("─────────────────────────────");
+  lines.push("");
+  var n6=g.recs.filter(function(r){return r.type==="6"});
+  var n8=g.recs.filter(function(r){return r.type==="8"});
+  var ex=g.recs.filter(function(r){return r.type==="ex"});
+  if(n6.length>0){
+    lines.push("☀ سهرات لـ 6 ("+n6.length+" سهرة = "+(n6.length*2)+" ساعات):");
+    n6.forEach(function(r){lines.push("  . "+fmtDate(r.date)+(r.note?" | "+r.note:""))});
+    lines.push("");
+  }
+  if(n8.length>0){
+    lines.push("* سهرات لـ 8 ("+n8.length+" سهرة = "+(n8.length*4)+" ساعات):");
+    n8.forEach(function(r){lines.push("  . "+fmtDate(r.date)+(r.note?" | "+r.note:""))});
+    lines.push("");
+  }
+  if(ex.length>0){
+    lines.push("+ أيام إضافية ("+ex.length+" يوم):");
+    ex.forEach(function(r){lines.push("  . "+fmtDate(r.date)+(r.note?" | "+r.note:""))});
+    lines.push("");
+  }
+  lines.push("─────────────────────────────");
+  lines.push("اجمالي ساعات السهر: "+g.hrs+" "+hrsWord(g.hrs));
+  if(g.days>0) lines.push("اجمالي الأيام الإضافية: "+g.days+" "+daysWord(g.days));
+
+  var txt=lines.join("\n");
+  var blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url;
+  a.download="overtime-"+g.lbl.replace(" ","-")+".txt";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast("✅ اتنزل الملف!","#00e5a0","#0d0f1a");
+}
+
+function renderHome(){
+  var gs=groups(),g=curGroup();
+  var n6=g.recs.filter(function(r){return r.type==="6"}).length;
+  var n8=g.recs.filter(function(r){return r.type==="8"}).length;
+  var el=document.getElementById("pg");
+  var h="";
+
+  h+='<div class="card"><div class="card-title">اختار التاريخ</div>';
+  h+='<input type="date" id="di" value="'+selDate+'" onchange="selDate=this.value;updHdr();updHint()"/>';
+  h+='<div class="dhint" id="dh"></div></div>';
+
+  h+='<div class="nbts">';
+  h+='<button class="nbt t6" onclick="addRec(&quot;6&quot;)"><span class="ic">&#9728;</span><span class="nm">سهرة لـ 6</span></button>';
+  h+='<button class="nbt t8" onclick="addRec(&quot;8&quot;)"><span class="ic">&#127769;</span><span class="nm">سهرة لـ 8</span></button>';
+  h+='</div>';
+
+  h+='<button class="extra-btn" onclick="addRec(&quot;ex&quot;)">';
+  h+='<div class="eb-nm">&#128197; يوم إضافي</div>';
+  h+='<div class="eb-sb">يوم جمعة أو إجازة رسمية</div>';
+  h+='</button>';
+
+  if(g.recs.length>0){
+    h+='<div class="card">';
+    h+='<div class="irow"><span class="il">الفترة</span><span class="iv acc">'+period(selDate).lbl+'</span></div>';
+    h+='<div class="sep"></div>';
+    if(n6>0) h+='<div class="irow"><span class="il">&#9728; سهرات لـ 6</span><span class="iv cy">'+n6+' سهرة &rarr; '+(n6*2)+' '+hrsWord(n6*2)+'</span></div>';
+    if(n8>0) h+='<div class="irow"><span class="il">&#127769; سهرات لـ 8</span><span class="iv acc">'+n8+' سهرة &rarr; '+(n8*4)+' '+hrsWord(n8*4)+'</span></div>';
+    if(g.days>0) h+='<div class="irow"><span class="il">&#128197; أيام إضافية</span><span class="iv gr">'+g.days+' '+daysWord(g.days)+'</span></div>';
+    h+='<div class="sep"></div>';
+    h+='<div class="total-row"><span class="tl">إجمالي ساعات السهر</span><span class="tv">'+g.hrs+' '+hrsWord(g.hrs)+'</span></div>';
+    h+='<button class="export-btn" onclick="exportPeriod('+period(selDate).key+')">&#11015; تصدير ملخص '+period(selDate).lbl+'</button>';
+    h+='</div>';
+  }
+
+  if(gs.length>0){
+    h+='<div class="sec-lbl">كل الفترات</div>';
+    gs.forEach(function(gg){
+      var gn6=gg.recs.filter(function(r){return r.type==="6"}).length;
+      var gn8=gg.recs.filter(function(r){return r.type==="8"}).length;
+      h+='<div class="sc"><div class="sc-head"><div class="sc-name">'+gg.lbl+'</div>';
+      h+='<div class="sc-badges">';
+      h+='<div class="scb acc"><div class="bv">'+gg.hrs+'</div><div class="bl">'+hrsWord(gg.hrs)+'</div></div>';
+      if(gg.days>0) h+='<div class="scb gr"><div class="bv">'+gg.days+'</div><div class="bl">'+daysWord(gg.days)+'</div></div>';
+      h+='</div></div>';
+      h+='<div class="sc-detail-row">';
+      if(gn6>0) h+='<span class="sc-det t6">&#9728; '+gn6+' سهرة لـ 6</span>';
+      if(gn8>0) h+='<span class="sc-det t8">&#127769; '+gn8+' سهرة لـ 8</span>';
+      if(gg.days>0) h+='<span class="sc-det ex">&#128197; '+gg.days+' يوم إضافي</span>';
+      h+='</div>';
+      h+='<div class="sc-actions">';
+      h+='<button class="export-btn-sm" onclick="exportPeriod('+gg.key+')">&#11015; تصدير</button>';
+      h+='<button class="del-period" onclick="askDelPer('+gg.key+')">&#128465; حذف الفترة</button>';
+      h+='</div></div>';
+    });
+  } else {
+    h+='<div class="empty"><div class="em">&#128336;</div><div>مفيش سجلات لسه</div><div class="es">اضغط على نوع السهرة أو اليوم الإضافي فوق</div></div>';
+  }
+
+  el.innerHTML=h;
+  updHint();
+}
+
+function updHint(){
+  var el=document.getElementById("dh");
+  if(!el) return;
+  var p=period(selDate);
+  el.innerHTML=fmtDate(selDate)+"<br/><span>"+p.lbl+"</span>";
+}
+
+function renderHist(){
+  var gs=groups();
+  var el=document.getElementById("pg");
+  if(!gs.length){
+    el.innerHTML='<div class="empty"><div class="em">&#128214;</div><div>السجل فاضي</div></div>';
+    return;
+  }
+  var h="";
+  gs.forEach(function(g){
+    h+='<div class="grp">';
+    h+='<div class="ph"><div class="ph-name">'+g.lbl+'</div>';
+    h+='<div class="ph-nums"><div class="ph-badge h">'+g.hrs+' '+hrsWord(g.hrs)+'</div>';
+    if(g.days>0) h+='<div class="ph-badge d">'+g.days+' '+daysWord(g.days)+'</div>';
+    h+='</div></div>';
+    g.recs.forEach(function(r){
+      var cls=r.type==="6"?"t6":r.type==="8"?"t8":"ex";
+      var hbdg=r.type==="ex"?'<div class="hbdg day">يوم</div>':'<div class="hbdg hrs">+'+r.hrs+'h</div>';
+      var ne=noteId===r.id?'<div class="ne"><input id="ni'+r.id+'" value="'+(r.note||"")+'" placeholder="ملاحظة..."/><button class="ns" onclick="saveNote('+r.id+')">&#10003;</button><button class="nc" onclick="togNote('+r.id+')">&#10005;</button></div>':"";
+      h+='<div class="rc '+cls+'"><div class="rc-top"><div>';
+      h+='<div class="rbdg '+cls+'">'+r.lbl+'</div>';
+      h+='<div class="rdate">'+fmtDate(r.date)+'</div>';
+      if(r.note) h+='<div class="rnote">'+r.note+'</div>';
+      h+='</div><div class="rac">'+hbdg;
+      h+='<button class="ibt" onclick="togNote('+r.id+')">&#9998;</button>';
+      h+='<button class="ibt" onclick="askDel('+r.id+')">&#128465;</button>';
+      h+='</div></div>'+ne+'</div>';
+    });
+    h+='<div class="sc-actions" style="margin-top:10px">';
+    h+='<button class="export-btn-sm" onclick="exportPeriod('+g.key+')">&#11015; تصدير</button>';
+    h+='<button class="del-period" onclick="askDelPer('+g.key+')">&#128465; حذف الفترة</button>';
+    h+='</div></div>';
+  });
+  el.innerHTML=h;
+}
+
+load();
+selDate=today();
+updHdr();
+renderHome();
+
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("./sw.js").catch(function(){});
+}
+</script>
+</body>
+</html>
